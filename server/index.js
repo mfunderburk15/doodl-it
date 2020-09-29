@@ -76,4 +76,5 @@ app.get("/api/auth/me", authCtrl.me);
 app.post("/api/lobby/create", lobbyCtrl.createLobby);
 app.get("/api/lobby/getlobbies", lobbyCtrl.getLobbies);
 app.put("/api/lobby/joinlobby/:lobby_id", lobbyCtrl.joinLobby);
+app.put("/api/lobby/leavelobby/", lobbyCtrl.leaveLobby);
 app.delete("/api/lobby/delete/:lobby_id", lobbyCtrl.deleteLobby);

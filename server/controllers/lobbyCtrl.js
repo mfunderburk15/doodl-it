@@ -43,9 +43,23 @@ module.exports = {
     const { user_id } = req.session.user;
 
     const user = await db.join_lobby([user_id, lobby_id]);
-    console.log(req.session.user);
 
     res.status(200).send(user);
   },
-  deleteLobby: async (req, res) => {},
+  leaveLobby: async (req, res) => {
+    const db = req.app.get("db");
+
+    const { user_id } = req.session.user;
+
+    const user = await db.leave_lobby([user_id]);
+
+    res.status(200).send(user);
+  },
+  deleteLobby: async (req, res) => {
+    /*
+
+    
+
+    */
+  },
 };
