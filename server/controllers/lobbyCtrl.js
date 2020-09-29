@@ -43,6 +43,7 @@ module.exports = {
     const { user_id } = req.session.user;
 
     const user = await db.join_lobby([user_id, lobby_id]);
+    console.log(req.session.user);
 
     res.status(200).send(user);
   },
