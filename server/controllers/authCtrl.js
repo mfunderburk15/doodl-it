@@ -64,8 +64,7 @@ module.exports = {
   },
   me: async (req, res) => {
     const db = req.app.get("db");
-    const { user_id } = req.session;
-    const { is_admin } = req.query;
+    const { user_id, is_admin } = req.session;
     const { username, user_img } = req.session;
     const user = await db.me(user_id, username, user_img, is_admin);
     res.status(200).send(req.session.user);

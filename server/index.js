@@ -75,5 +75,5 @@ app.get("/api/auth/me", authCtrl.me);
 //lobby endpoints
 app.post("/api/lobby/create", lobbyCtrl.createLobby);
 app.get("/api/lobby/getlobbies", lobbyCtrl.getLobbies);
-app.get("/api/lobby/getLobbyById/:lobby_id", lobbyCtrl.getLobbyById);
+app.put("/api/lobby/joinlobby/:lobby_id", lobbyCtrl.joinLobby);
 app.delete("/api/lobby/delete/:lobby_id", lobbyCtrl.deleteLobby);
