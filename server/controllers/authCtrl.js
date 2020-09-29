@@ -16,7 +16,20 @@ module.exports = {
 
     const user_img = `https://api.adorable.io/avatars/285/${username}.png`;
 
-    const [newUser] = await db.register_user([username, hash, user_img]);
+    const is_admin = false;
+
+    const is_creator = false;
+
+    const lobby_id = null;
+
+    const [newUser] = await db.register_user([
+      username,
+      hash,
+      user_img,
+      is_admin,
+      is_creator,
+      lobby_id,
+    ]);
 
     req.session.user = newUser;
 
@@ -52,8 +65,9 @@ module.exports = {
   me: async (req, res) => {
     const db = req.app.get("db");
     const { user_id } = req.session;
-    const { username, user_img, user_score } = req.session;
-    const user = await db.me(user_id, username, user_img, user_score);
+    const { is_admin } = req.query;
+    const { username, user_img } = req.session;
+    const user = await db.me(user_id, username, user_img, is_admin);
     res.status(200).send(req.session.user);
   },
 };

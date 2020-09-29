@@ -38,9 +38,32 @@ massive({
   console.log("DB Works!");
 });
 
-//
+//socket connection event in the io object and sending the userlist
 io.on("connection", (socket) => {
-  console.log("made socket connection", data);
+  console.log(`Socket connected`);
+
+  socket.on(`disconnect`, () => {
+    console.log(`Socket disconnected`);
+  });
+
+  //lobby socket
+  socket.on("join lobby", (data) => {
+    console.log(`join lobby ${data.lobby_id}`);
+    socket.join(data.lobby_id);
+  });
+
+  //emits whats being drawn to all clients
+  socket.on("draw", (obj) => {
+    socket.broadcast.emit("draw", obj);
+  });
+
+  //emits guesses to all clients
+  socket.on("guess", (data) => {
+    io.emit("guess", { username: data.username, guess: data.guess });
+    console.log(
+      `guess event triggered from: ${data.username} with word: ${data.guess} `
+    );
+  });
 });
 
 //Auth endpoints
