@@ -11,8 +11,6 @@ module.exports = {
 
     const { word } = req.body;
 
-    // const checkword = await database function
-
     const [checkWord] = await db.check_word([word]);
 
     if (checkWord) {
