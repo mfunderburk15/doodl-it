@@ -39,31 +39,77 @@ massive({
   console.log("DB Works!");
 });
 
-//socket connection event in the io object and sending the userlist
+let rooms = []; //rooms currently used
+let emptyRoom = {
+  lobby_id: null,
+  players: [
+    {
+      username: "",
+      score: 0,
+      is_creator: false,
+    },
+  ],
+  drawHistory: [],
+  currentHandle: 0,
+  words: [],
+  currentWord: "",
+  points: [],
+};
+
+let room = emptyRoom;
+
 io.on("connection", (socket) => {
-  console.log(`Socket connected`);
+  console.log("User connected");
 
-  socket.on(`disconnect`, () => {
-    console.log(`Socket disconnected`);
+  //drawing events
+  socket.on("draw", (data) => {
+    room.drawHistory.push({
+      lines: data.lines,
+      width: data.width,
+      color: data.color,
+    });
+    socket.broadcast.emit("drawing", data);
   });
 
-  //lobby socket
-  socket.on("join lobby", (data) => {
-    console.log(`join lobby ${data.lobby_id}`);
-    socket.join(data.lobby_id);
+  socket.on("clear", (data) => {
+    room.drawHistory = [];
+    socket.broadcast.emit("clear");
   });
 
-  //emits whats being drawn to all clients
-  socket.on("draw", (obj) => {
-    socket.broadcast.emit("draw", obj);
+  socket.on("clear last", (data) => {
+    room.drawHistory.splice(-1, 1);
+    socket.broadcast.emit("clear");
+    for (const drawObject of room.drawHistory) {
+      socket.broadcast.emit("draw", drawObject);
+    }
   });
 
-  //emits guesses to all clients
-  socket.on("guess", (data) => {
-    io.emit("guess", { username: data.username, guess: data.guess });
-    console.log(
-      `guess event triggered from: ${data.username} with word: ${data.guess} `
-    );
+  //creating a lobby and with the creator
+  socket.on("initiate-lobby", (data) => {
+    room = data;
+    console.log("initiate");
+    console.log(room);
+  });
+
+  //user joining a session in progress
+  socket.on("join", (data) => {
+    room.players.push({
+      username: data.username,
+      score: 0,
+      is_creator: false,
+    });
+    console.log("emiting joined");
+    socket.broadcast.emit("joined", room);
+    console.log("emitted joined");
+  });
+
+  socket.on("sucessful-guess", (data) => {
+    room.points.push(data.user_id);
+    socket.broadcast.emit("next-handle");
+  });
+
+  socket.on("end-of-game", (data) => {
+    //Calculate the score and announce the winner
   });
 });
 
