@@ -5,6 +5,7 @@ const session = require("express-session");
 const socket = require("socket.io");
 const authCtrl = require("./controllers/authCtrl");
 const lobbyCtrl = require("./controllers/lobbyCtrl");
+const wordsCtrl = require("./controllers/wordsCtrl");
 
 const app = express();
 const { CONNECTION_STRING, SERVER_PORT, SESSION_SECRET } = process.env;
@@ -78,3 +79,8 @@ app.get("/api/lobby/getlobbies", lobbyCtrl.getLobbies);
 app.put("/api/lobby/joinlobby/:lobby_id", lobbyCtrl.joinLobby);
 app.put("/api/lobby/leavelobby/", lobbyCtrl.leaveLobby);
 app.delete("/api/lobby/delete/:lobby_id", lobbyCtrl.deleteLobby);
+
+//word endpoints
+app.get("/api/words/get", wordsCtrl.getWords);
+app.post("/api/words/create", wordsCtrl.createWord);
+app.delete("/api/words/delete", wordsCtrl.deleteWord);
