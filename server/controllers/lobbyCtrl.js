@@ -56,10 +56,17 @@ module.exports = {
     res.status(200).send(user);
   },
   deleteLobby: async (req, res) => {
-    /*
+    const db = req.app.get("db");
 
-    
+    const { lobby_id } = req.params;
 
-    */
+    const { user_id } = req.session.user;
+
+    await db.leave_lobby([user_id]);
+
+    await db.delete_lobby([lobby_id]);
+
+    const lobbies = await db.get_lobbies();
+    res.status(200).send(lobbies);
   },
 };
