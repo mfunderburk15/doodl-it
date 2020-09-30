@@ -2,7 +2,7 @@ module.exports = {
   getWords: async (req, res) => {
     const db = req.app.get("db");
 
-    const words = await db.get_lobbies();
+    const words = await db.get_words();
 
     res.status(200).send(words);
   },
@@ -18,5 +18,15 @@ module.exports = {
       res.status(200).send(newWord);
     }
   },
-  deleteWord: (req, res) => {},
+  deleteWord: async (req, res) => {
+    const db = req.app.get("db");
+
+    const { word_id } = req.params;
+
+    await db.delete_word([word_id]);
+
+    const words = await db.get_words();
+
+    res.status(200).send(words);
+  },
 };
