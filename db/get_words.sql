@@ -1,1 +1,1 @@
-SELECT word FROM words;
+SELECT * FROM words;
