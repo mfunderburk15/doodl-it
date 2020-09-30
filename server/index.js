@@ -83,4 +83,4 @@ app.delete("/api/lobby/delete/:lobby_id", lobbyCtrl.deleteLobby);
 //word endpoints
 app.get("/api/words/get", wordsCtrl.getWords);
 app.post("/api/words/create", wordsCtrl.createWord);
-app.delete("/api/words/delete", wordsCtrl.deleteWord);
+app.delete("/api/words/delete/:word_id", wordsCtrl.deleteWord);
