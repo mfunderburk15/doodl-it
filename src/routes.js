@@ -3,7 +3,7 @@ import { Switch, Route, Redirect } from "react-router-dom";
 
 //component imports
 import Home from "./components/Home/Home";
-import LobbyEvents from "./components/LobbyEvents/LobbyEvents";
+import NewLobby from "./components/NewLobby/NewLobby";
 import Login from "./components/Login/Login";
 import Register from "./components/Register/Register";
 
@@ -12,7 +12,7 @@ export default (
     <Route path="/home" component={Home} />
     <Route path="/lobby/:lobby_id" component={Lobby} />
     <Route path="/admin" component={Admin} />
-    <Route path="/lobbyevent" component={LobbyEvents} />
+    <Route path="/newlobby" component={NewLobby} />
     <Route path="/login" component={Login} />
     <Route path="/register" component={Register} />
     <Route path="/" component={() => <Redirect to="/login" />} />
