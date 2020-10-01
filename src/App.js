@@ -7,7 +7,10 @@ import Nav from "./components/Nav/Nav";
 function App() {
   return (
     <div className="App">
-      {props.location.pathname === "/" ? null : <Nav />}
+      {props.location.pathname === "/login" ||
+      props.location.pathname === "/register" ? null : (
+        <Nav />
+      )}
       {routes}
     </div>
   );
