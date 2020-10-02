@@ -8,14 +8,12 @@ function Home() {
 
   useEffect(() => {
     getLobbies();
-  }, [lobbies]);
+  }, []);
 
   const getLobbies = () => {
-    let url = "/api/getlobbies/";
+    let url = "/api/getlobbies/?search=";
     if (search) {
       url += `?search=${search}`;
-    } else {
-      url += `?search=`;
     }
     axios.get(url).then((res) => {
       setLobbies({

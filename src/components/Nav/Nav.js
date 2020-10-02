@@ -5,12 +5,6 @@ import { connect } from "react-redux";
 import { updateUser, logout } from "../../ducks/authReducer";
 
 function Nav(props) {
-  // componentDidMount = () => {
-  //   axios.get("/api/auth/me").then((res) => {
-  //     props.updateUser(res.data);
-  //   });
-  // };
-
   useEffect(() => {
     axios.get("/api/auth/me").then((res) => {
       props.updateUser(res.data);
@@ -20,10 +14,9 @@ function Nav(props) {
   const handleLogOut = () => {
     axios.post("/api/auth/logout").then((res) => {
       props.logout();
+      props.history.push("/");
     });
   };
-
-  console.log(props);
 
   return (
     <div>

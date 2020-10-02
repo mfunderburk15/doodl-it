@@ -11,8 +11,8 @@ export default function (state = initialState, action) {
     case UPDATE_USER:
       return {
         ...state,
-        setUsername: action.payload.username,
-        profile_pic: action.payload.user_img,
+        username: action.payload.username,
+        user_img: action.payload.user_img,
       };
     case LOGOUT:
       return initialState;
