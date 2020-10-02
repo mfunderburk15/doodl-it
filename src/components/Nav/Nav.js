@@ -18,12 +18,20 @@ function Nav(props) {
   return (
     <div>
       <div>
-        <img className="profile-pic" src={} />
-        <p></p>
+        <img className="profile-pic" src={props.user_img} />
+        <p>{props.username}</p>
+      </div>
+      <div>
+        <Link className="nav-home" to="/home" />
+        <Link className="nav-new-lobby" to="/newlobby" />
       </div>
       <button onClick={handleLogOut}>LOG OUT</button>
     </div>
   );
+}
+
+function mapStateToProps(state) {
+  return state;
 }
 
 export default withRouter(
