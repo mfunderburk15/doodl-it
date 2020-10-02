@@ -4,7 +4,7 @@ import { withRouter } from "react-router-dom";
 import routes from "./routes";
 import Nav from "./components/Nav/Nav";
 
-function App() {
+function App(props) {
   return (
     <div className="App">
       {props.location.pathname === "/login" ||

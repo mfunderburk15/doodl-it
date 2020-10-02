@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
 
 function Home() {
@@ -9,7 +10,7 @@ function Home() {
     getLobbies();
   }, [lobbies]);
 
-  getLobbies = () => {
+  const getLobbies = () => {
     let url = "/api/getlobbies/";
     if (search) {
       url += `?search=${search}`;
@@ -23,13 +24,13 @@ function Home() {
     });
   };
 
-  handleChange = (e) => {
+  const handleChange = (e) => {
     setSearch({
       search: e.target.value,
     });
   };
 
-  reset = () => {
+  const reset = () => {
     let url = "/api/lobby/getlobbies";
     axios.get(url).then((res) => {
       setLobbies({ lobbies: [] });

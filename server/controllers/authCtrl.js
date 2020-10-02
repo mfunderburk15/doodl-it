@@ -40,6 +40,8 @@ module.exports = {
 
     const { username, password } = req.body;
 
+    console.log(username, password);
+
     const [existingUser] = await db.check_user([username]);
 
     if (!existingUser) {
