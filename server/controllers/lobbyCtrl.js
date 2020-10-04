@@ -2,29 +2,25 @@ module.exports = {
   getLobbies: async (req, res) => {
     const db = req.app.get("db");
 
-    const { search } = req.query;
+    const lobbies = await db.get_all_lobbies();
 
-    const lobbies = await db.get_lobbies();
+    res.status(200).send(lobbies);
 
-    if (search) {
-      const lowerSearch = search.toLowerCase();
-      const filteredLobbies = lobbies.filter((lobby) =>
-        lobby.lobby_name.toLowerCase().includes(lowerSearch)
-      );
-      return res.status(200).send(filteredLobbies);
-    } else {
-      return res.status(200).send(lobbies);
-    }
+    // const { search } = req.query;
+
+    // const lobbies = await db.get_lobbies();
+
+    // if (search) {
+    //   const lowerSearch = search.toLowerCase();
+    //   const filteredLobbies = lobbies.filter((lobby) =>
+    //     lobby.lobby_name.toLowerCase().includes(lowerSearch)
+    //   );
+    //   return res.status(200).send(filteredLobbies);
+    // } else {
+    //   return res.status(200).send(lobbies);
+    // }
   },
   createLobby: async (req, res) => {
-    /*
-    xI need to access the db
-    xI need to destructure user info off of req.session
-    xI need to destructure lobby info off of req.params
-    xI want to create the lobby with create_lobby
-    I will need to update the user's is_creator and lobby_id to show the user joined the lobby 
-    */
-
     const db = req.app.get("db");
 
     const { user_id } = req.session.user;
@@ -66,7 +62,7 @@ module.exports = {
 
     await db.delete_lobby([lobby_id]);
 
-    const lobbies = await db.get_lobbies();
+    const lobbies = await db.get_all_lobbies();
     res.status(200).send(lobbies);
   },
 };

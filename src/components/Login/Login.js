@@ -10,7 +10,6 @@ function Login(props) {
 
   const handleLogin = () => {
     axios.post("/api/auth/login", { username, password }).then((res) => {
-      console.log(res.data);
       props.updateUser(res.data);
       props.history.push("/home");
     });

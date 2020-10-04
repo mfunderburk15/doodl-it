@@ -25,8 +25,12 @@ function Nav(props) {
         <p>{props.username}</p>
       </div>
       <div>
-        <Link className="nav-home" to="/home" />
-        <Link className="nav-new-lobby" to="/newlobby" />
+        <Link className="nav-home" to="/home">
+          home
+        </Link>
+        <Link className="nav-new-lobby" to="/newlobby">
+          Create a new lobby
+        </Link>
       </div>
       <button onClick={handleLogOut}>LOG OUT</button>
     </div>

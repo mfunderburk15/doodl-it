@@ -4,70 +4,26 @@ import axios from "axios";
 
 function Home() {
   const [lobbies, setLobbies] = useState([]);
-  const [search, setSearch] = useState("");
 
   useEffect(() => {
-    getLobbies();
-  }, []);
-
-  const getLobbies = () => {
-    let url = "/api/getlobbies/?search=";
-    if (search) {
-      url += `?search=${search}`;
-    }
-    axios.get(url).then((res) => {
-      setLobbies({
-        lobbies: res.data,
-      });
+    axios.get("/api/lobby/getlobbies").then((res) => {
+      setLobbies(res.data);
     });
-  };
+  }, [lobbies]);
 
-  const handleChange = (e) => {
-    setSearch({
-      search: e.target.value,
-    });
-  };
-
-  const reset = () => {
-    let url = "/api/lobby/getlobbies";
-    axios.get(url).then((res) => {
-      setLobbies({ lobbies: [] });
-      setSearch({ search: "" });
-    });
-  };
-
-  const mapLobbies = lobbies.map((e) => {
+  const mapLobbies = lobbies.map((e, i) => {
     return (
-      <Link className="lobby" to={`/lobby/${e.id}`} key={e.id}>
+      <Link className="lobby" to={`/api/lobby/${e.lobby_id}`} key={i}>
         <div>
           <img src={e.lobby_img} />
           <h3>{e.lobby_name}</h3>
         </div>
-        <div>{e.username}</div>
       </Link>
     );
   });
 
   return (
     <div>
-      <div className="content-box">
-        <div className="filter">
-          <input
-            className="search-bar"
-            name="search"
-            placeholder="Search by Title"
-            onChange={(e) => {
-              handleChange(e);
-            }}
-          />
-          <button className="search-button" onClick={getLobbies}>
-            SEARCH
-          </button>
-          <button className="reset-button" onClick={reset}>
-            RESET
-          </button>
-        </div>
-      </div>
       <div className="lobby-box">{mapLobbies}</div>
     </div>
   );
