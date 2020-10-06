@@ -4,7 +4,9 @@ module.exports = {
 
     const words = await db.get_words();
 
-    res.status(200).send(words);
+    res
+      .status(200)
+      .send(words[Math.floor(Math.random(words.length - 1) * words.length)]);
   },
   createWord: async (req, res) => {
     const db = req.app.get("db");

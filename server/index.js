@@ -39,78 +39,159 @@ massive({
   console.log("DB Works!");
 });
 
-let rooms = []; //rooms currently used
-let emptyRoom = {
-  lobby_id: null,
-  players: [
-    {
-      username: "",
-      score: 0,
-      is_creator: false,
-    },
-  ],
-  drawHistory: [],
-  currentHandle: 0,
-  words: [],
-  currentWord: "",
-  points: [],
+let words = [
+  "word",
+  "letter",
+  "number",
+  "person",
+  "man",
+  "people",
+  "sound",
+  "apple",
+  "men",
+  "woman",
+  "women",
+  "boy",
+  "seagull",
+  "hotdog",
+  "hamburger",
+  "Earth",
+  "girl",
+  "week",
+  "month",
+  "name",
+  "elephant",
+  "feather",
+  "sled",
+  "keyboard",
+  "land",
+  "home",
+  "hand",
+  "house",
+  "picture",
+  "animal",
+  "mother",
+  "father",
+  "air",
+  "sandwich",
+  "moon",
+  "world",
+  "head",
+  "page",
+  "country",
+  "question",
+  "pigeon",
+  "school",
+  "plant",
+  "food",
+  "sun",
+  "state",
+  "eye",
+  "city",
+  "tree",
+  "Trump",
+  "puppy",
+  "farm",
+  "story",
+  "egg",
+  "night",
+  "day",
+  "life",
+  "north",
+  "south",
+  "east",
+  "man",
+  "west",
+  "child",
+  "children",
+  "paper",
+  "music",
+  "river",
+  "car",
+  "Superman",
+  "beetle",
+  "feet",
+  "book",
+  "duck",
+  "friend",
+  "fish",
+  "mouse",
+  "owl",
+  "soda",
+  "mountain",
+  "horse",
+  "watch",
+  "color",
+  "face",
+  "wood",
+  "Mars",
+  "bird",
+  "water",
+  "body",
+  "family",
+  "song",
+  "door",
+  "forest",
+  "wind",
+  "ship",
+  "area",
+  "hat",
+  "rock",
+  "fire",
+  "problem",
+  "airplane",
+  "top",
+  "bottom",
+  "king",
+  "breakfast",
+  "space",
+  "whale",
+  "unicorn",
+  "sunset",
+  "sunburn",
+  "whale",
+  "coffee",
+  "butterfly",
+];
+let wordcount;
+
+const newWord = () => {
+  wordcount = Math.floor(Math.random() * words.length);
+  return words[wordcount];
 };
 
-let room = emptyRoom;
+let users = {}
 
-io.on("connection", (socket) => {
-  console.log("User connected");
+io.on('connection', (socket) => {
+  io.emit('userlist', users)
 
-  //drawing events
-  socket.on("draw", (data) => {
-    room.drawHistory.push({
-      lines: data.lines,
-      width: data.width,
-      color: data.color,
-    });
-    socket.broadcast.emit("drawing", data);
-  });
-
-  socket.on("clear", (data) => {
-    room.drawHistory = [];
-    socket.broadcast.emit("clear");
-  });
-
-  socket.on("clear last", (data) => {
-    room.drawHistory.splice(-1, 1);
-    socket.broadcast.emit("clear");
-    for (const drawObject of room.drawHistory) {
-      socket.broadcast.emit("draw", drawObject);
+ 
+  
+  socket.on('leave', (data) => {
+    for(let i=0; i < users[data.lobby].length; i++){
+      console.log(users[data.lobby][i])
+      if(users[data.lobby][i] === `${data.name}`){
+        users[data.lobby].splice(i,1)
+      }
+      console.log(users[data.lobby])
     }
+    console.log(`${data.name} has disconnected`)
+    io.in(data.lobby).emit('member leave', users[data.users])
+  })
+  //Setting up join events on the socket, I want the username to be pushed onto the users array of the socket and logging the info
+  socket.on('join', (data) => {
+    socket.username = data.name;
+    socket.join(data.lobby);
+    if(users[data.lobby]){
+      users[data.lobby].push(socket.username)
+    }else{
+      users[data.lobby] = [socket.username]
+    }
+    console.log(`${socket.username} has joined. ID: ${data.lobby}`);
+    io.in(data.lobby).emit('member join', users[data.lobby])
   });
 
-  //creating a lobby and with the creator
-  socket.on("initiate-lobby", (data) => {
-    room = data;
-    console.log("initiate");
-    console.log(room);
-  });
-
-  //user joining a session in progress
-  socket.on("join", (data) => {
-    room.players.push({
-      username: data.username,
-      score: 0,
-      is_creator: false,
-    });
-    console.log("emiting joined");
-    socket.broadcast.emit("joined", room);
-    console.log("emitted joined");
-  });
-
-  socket.on("sucessful-guess", (data) => {
-    room.points.push(data.user_id);
-    socket.broadcast.emit("next-handle");
-  });
-
-  socket.on("end-of-game", (data) => {
-    //Calculate the score and announce the winner
-  });
+  // console.log("hit socket", socket)
 });
 
 //Auth endpoints

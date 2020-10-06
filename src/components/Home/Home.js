@@ -9,11 +9,15 @@ function Home() {
     axios.get("/api/lobby/getlobbies").then((res) => {
       setLobbies(res.data);
     });
-  }, [lobbies]);
+  }, []);
+
+  // joinLobby = () => {
+  //   axios.put("/api/lobby/joinlobby/:lobby_id");
+  // };
 
   const mapLobbies = lobbies.map((e, i) => {
     return (
-      <Link className="lobby" to={`/api/lobby/${e.lobby_id}`} key={i}>
+      <Link className="lobby" to={`/lobby/${e.lobby_id}`} key={i}>
         <div>
           <img src={e.lobby_img} />
           <h3>{e.lobby_name}</h3>
