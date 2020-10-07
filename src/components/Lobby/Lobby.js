@@ -22,12 +22,13 @@ class Lobby extends Component {
     this.setState({
       users:data
     })
+    // this.socket.on('draw', draw)  
+      console.log(data)
+    })
     this.socket.on('member leave', (data) => {
       this.setState({
         users:data
       })
-    })
-    // this.socket.on('draw', draw)  
       console.log(data)
     })
     
@@ -38,18 +39,48 @@ class Lobby extends Component {
       user: this.props.username,
     });
     this.socket.emit('join', {name:this.props.username, lobby:this.props.match.params.lobby_id});
-
-    
-
   }
 
+  
   componentWillUnmount(){
-    this.socket.emit('leave', {name:this.props.username, lobby:this.props.match.params.lobby_id})
     console.log("hit")
-  }  
+    this.socket.emit('leave', {name:this.props.username, lobby:this.props.match.params.lobby_id})
+  }
+  
+ 
 
   render() {
-    return (<div>Lobby</div>);
+    const mappedUsers = this.state.users.map((e, i) => {
+      return(
+        <p className="users-in-lobby" key={i}>{e}</p>
+      )
+    })
+    return (<div className="lobby">
+      <div className="row">
+        <canvas class="canvas"></canvas>
+        <div className="users">
+        <ul>{mappedUsers}</ul>
+          <div className="guesses"></div>
+          <div className="draw-buttons">
+          <button value="0" class="clear" type="button">X</button>
+                <button value="#000000" class="black" type="button"></button>
+                <button value="#0000EE" class="blue" type="button"></button>
+                <button value="#66CD00" class="green" type="button"></button>
+                <button value="#FF0000" class="red" type="button"></button>
+                <button value="#FFFF00" class="yellow" type="button"></button>
+                <button value="white" class="white" type="button"></button>
+          </div>
+        </div>
+        <div className="top-message">
+          <div className="draw hidden">
+            <p>The secret word is: <span className="word"></span></p>
+          </div>
+          <form>
+            Guess the word! <input name="guess" class="guess-input" type="text" />
+          </form>
+        </div>
+      </div>
+    </div>);
   }
 }
 

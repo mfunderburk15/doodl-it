@@ -165,18 +165,16 @@ let users = {}
 io.on('connection', (socket) => {
   io.emit('userlist', users)
 
- 
-  
+  //if someone leaves the component
   socket.on('leave', (data) => {
     for(let i=0; i < users[data.lobby].length; i++){
-      console.log(users[data.lobby][i])
-      if(users[data.lobby][i] === `${data.name}`){
+      if(users[data.lobby][i] === data.name){
         users[data.lobby].splice(i,1)
       }
-      console.log(users[data.lobby])
     }
-    console.log(`${data.name} has disconnected`)
-    io.in(data.lobby).emit('member leave', users[data.users])
+    socket.leave(data.lobby)
+    console.log(users)
+    io.in(data.lobby).emit('member leave', users[data.lobby])
   })
   //Setting up join events on the socket, I want the username to be pushed onto the users array of the socket and logging the info
   socket.on('join', (data) => {
@@ -191,7 +189,6 @@ io.on('connection', (socket) => {
     io.in(data.lobby).emit('member join', users[data.lobby])
   });
 
-  // console.log("hit socket", socket)
 });
 
 //Auth endpoints
