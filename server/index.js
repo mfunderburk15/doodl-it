@@ -165,6 +165,13 @@ let users = {}
 io.on('connection', (socket) => {
   io.emit('userlist', users)
 
+  socket.on('finish drawing', (data) => {
+    console.log('finish drawing')
+    socket.to(data.lobby).emit('emit draw finish', data)
+  })
+
+  
+
   //if someone leaves the component
   socket.on('leave', (data) => {
     for(let i=0; i < users[data.lobby].length; i++){

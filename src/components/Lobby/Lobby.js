@@ -3,6 +3,7 @@ import io from "socket.io-client";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { updateUser } from "../../ducks/authReducer";
+import Canvas from "../Canvas/Canvas"
 
 
 
@@ -55,21 +56,16 @@ class Lobby extends Component {
         <p className="users-in-lobby" key={i}>{e}</p>
       )
     })
-    return (<div className="lobby">
+    return (
+    <div className="lobby">
       <div className="row">
-        <canvas class="canvas"></canvas>
+        <Canvas
+        lobby={this.props.match.params.lobby_id}
+        socket={this.socket}/>
         <div className="users">
         <ul>{mappedUsers}</ul>
           <div className="guesses"></div>
-          <div className="draw-buttons">
-          <button value="0" class="clear" type="button">X</button>
-                <button value="#000000" class="black" type="button"></button>
-                <button value="#0000EE" class="blue" type="button"></button>
-                <button value="#66CD00" class="green" type="button"></button>
-                <button value="#FF0000" class="red" type="button"></button>
-                <button value="#FFFF00" class="yellow" type="button"></button>
-                <button value="white" class="white" type="button"></button>
-          </div>
+          
         </div>
         <div className="top-message">
           <div className="draw hidden">

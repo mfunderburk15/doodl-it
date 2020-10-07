@@ -12,6 +12,7 @@ function Nav(props) {
   }, []);
 
   const handleLogOut = () => {
+    props.history.push("/home")
     axios.post("/api/auth/logout").then((res) => {
       props.logout();
       props.history.push("/");
