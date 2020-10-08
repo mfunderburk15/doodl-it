@@ -6,7 +6,7 @@ module.exports = {
 
     res
       .status(200)
-      .send(words[Math.floor(Math.random(words.length - 1) * words.length)]);
+      .send(words);
   },
   createWord: async (req, res) => {
     const db = req.app.get("db");

@@ -39,131 +39,33 @@ massive({
   console.log("DB Works!");
 });
 
-let words = [
-  "word",
-  "letter",
-  "number",
-  "person",
-  "man",
-  "people",
-  "sound",
-  "apple",
-  "men",
-  "woman",
-  "women",
-  "boy",
-  "seagull",
-  "hotdog",
-  "hamburger",
-  "Earth",
-  "girl",
-  "week",
-  "month",
-  "name",
-  "elephant",
-  "feather",
-  "sled",
-  "keyboard",
-  "land",
-  "home",
-  "hand",
-  "house",
-  "picture",
-  "animal",
-  "mother",
-  "father",
-  "air",
-  "sandwich",
-  "moon",
-  "world",
-  "head",
-  "page",
-  "country",
-  "question",
-  "pigeon",
-  "school",
-  "plant",
-  "food",
-  "sun",
-  "state",
-  "eye",
-  "city",
-  "tree",
-  "Trump",
-  "puppy",
-  "farm",
-  "story",
-  "egg",
-  "night",
-  "day",
-  "life",
-  "north",
-  "south",
-  "east",
-  "man",
-  "west",
-  "child",
-  "children",
-  "paper",
-  "music",
-  "river",
-  "car",
-  "Superman",
-  "beetle",
-  "feet",
-  "book",
-  "duck",
-  "friend",
-  "fish",
-  "mouse",
-  "owl",
-  "soda",
-  "mountain",
-  "horse",
-  "watch",
-  "color",
-  "face",
-  "wood",
-  "Mars",
-  "bird",
-  "water",
-  "body",
-  "family",
-  "song",
-  "door",
-  "forest",
-  "wind",
-  "ship",
-  "area",
-  "hat",
-  "rock",
-  "fire",
-  "problem",
-  "airplane",
-  "top",
-  "bottom",
-  "king",
-  "breakfast",
-  "space",
-  "whale",
-  "unicorn",
-  "sunset",
-  "sunburn",
-  "whale",
-  "coffee",
-  "butterfly",
-];
-let wordcount;
-
-const newWord = () => {
-  wordcount = Math.floor(Math.random() * words.length);
-  return words[wordcount];
+let rooms = [] // Those are the rooms currently used
+let emptyRoom = {
+    lobby_id: null,
+    players: [{
+        username:"",
+        score: 0,
+        is_creator: false
+    }],
+    drawHistory: [],
+    currentRound:0,
+    words:[],
+    currentWord: "",
+    points: []
 };
+
+let room = emptyRoom
 
 let users = {}
 
 io.on('connection', (socket) => {
   io.emit('userlist', users)
+
+  socket.on('initiate lobby', (data) => {
+    room = data;
+    console.log('initiate')
+    console.log(room)
+  })
 
   socket.on('finish drawing', (data) => {
     console.log('finish drawing')
@@ -183,8 +85,8 @@ io.on('connection', (socket) => {
     console.log(users)
     io.in(data.lobby).emit('member leave', users[data.lobby])
   })
-  //Setting up join events on the socket, I want the username to be pushed onto the users array of the socket and logging the info
-  socket.on('join', (data) => {
+
+  socket.on('join userlist', (data) => {
     socket.username = data.name;
     socket.join(data.lobby);
     if(users[data.lobby]){
@@ -192,8 +94,21 @@ io.on('connection', (socket) => {
     }else{
       users[data.lobby] = [socket.username]
     }
-    console.log(`${socket.username} has joined. ID: ${data.lobby}`);
+  console.log(`${socket.username} has joined. ID: ${data.lobby}`);
     io.in(data.lobby).emit('member join', users[data.lobby])
+  })
+  
+
+  //Setting up join events on the socket, I want the username to be pushed onto the users array of the socket and logging the info
+  socket.on('join', (data) => {
+    room.players.push({
+      username: data.name,
+      score: 0,
+      is_creator: false
+    })
+    console.log('emitting joined')
+    socket.broadcast.emit('joined', room)
+    console.log('emitted joined')
   });
 
 });

@@ -1,15 +1,21 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { connect } from "react-redux";
+import {updateUser} from "../../ducks/authReducer"
 
 function NewLobby(props) {
+  
   const [lobby_name, setLobbyName] = useState("");
   const [lobby_img, setLobbyImg] = useState("");
+  
+  console.log(props)
 
   const newLobby = () => {
-    axios.post("/api/lobby/create", { lobby_name, lobby_img }).then((res) => {
+    axios.post("/api/lobby/create", { lobby_name, lobby_img}).then((res) => {
       console.log(res.data);
+      //props.updateUser(res.data)
       props.history.push(`/lobby/${res.data[0].lobby_id}`);
+
     });
   };
 
@@ -43,9 +49,7 @@ function NewLobby(props) {
 }
 
 function mapStateToProps(state) {
-  return {
-    user_id: state.user_id,
-  };
+  return state
 }
 
-export default connect(mapStateToProps)(NewLobby);
+export default connect(mapStateToProps, {updateUser})(NewLobby);
