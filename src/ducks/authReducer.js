@@ -2,7 +2,8 @@ const initialState = {
   user_id:null,
   username: "",
   user_img: "",
-  is_creator: false
+  is_creator: false,
+  lobby_id: 0
 };
 
 const UPDATE_USER = "UPDATE_USER";
@@ -16,7 +17,8 @@ export default function (state = initialState, action) {
         user_id: action.payload.user_id,
         username: action.payload.username,
         user_img: action.payload.user_img,
-        is_creator: action.payload.is_creator
+        is_creator: action.payload.is_creator,
+        lobby_id: action.payload.lobby_id
       };
     case LOGOUT:
       return initialState;

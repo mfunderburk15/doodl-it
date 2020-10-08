@@ -50,6 +50,8 @@ class Lobby extends Component {
   }
 
   componentDidMount() {
+    const { user_id, username, user_img, is_creator, lobby_id} = this.props
+    this.props.updateUser({user_id, username, user_img, is_creator, lobby_id})
     if(this.is_creator){
       axios.get("/api/words/get").then((res) => {
         const shuffled = res.data.sort(() => { return 0.5 - Math.random()})
