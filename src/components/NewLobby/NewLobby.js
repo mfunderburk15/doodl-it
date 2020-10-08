@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { connect } from "react-redux";
-import {updateUser} from "../../ducks/authReducer"
 
 function NewLobby(props) {
   
@@ -50,4 +49,4 @@ function mapStateToProps(state) {
   return state
 }
 
-export default connect(mapStateToProps, {updateUser})(NewLobby);
+export default connect(mapStateToProps)(NewLobby);
