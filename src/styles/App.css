@@ -1,16 +1,21 @@
 * {
-    box-sizing: border-box;
-  }
-  
-.App{
-    background: url("https://image.freepik.com/free-vector/set-business-doodle-texture-design_6199-26.jpg");
-    height: 100vh;
-    width: 100vw;
+  box-sizing: border-box;
 }
 
-.App-cover{
-    background: rgb(7,33,0);
-background: linear-gradient(90deg, rgba(7,33,0,0.873764471300769) 0%, rgba(15,121,9,0.7318086353386238) 100%, rgba(7,130,0,1) 100%);
-    width:100vw;
-    height: 100vh;
+.App {
+  background: url("https://image.freepik.com/free-vector/set-business-doodle-texture-design_6199-26.jpg");
+  min-height: 100vh;
+  min-width: 100vw;
+}
+
+.App-cover {
+  background: rgb(7, 33, 0);
+  background: linear-gradient(
+    90deg,
+    rgba(7, 33, 0, 0.873764471300769) 0%,
+    rgba(15, 121, 9, 0.7318086353386238) 100%,
+    rgba(7, 130, 0, 1) 100%
+  );
+  min-width: 100%;
+  min-height: 100%;
 }

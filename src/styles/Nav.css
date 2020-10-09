@@ -1,0 +1,68 @@
+* {
+  box-sizing: border-box;
+}
+
+.Nav {
+  font-family: Arial, Helvetica, sans-serif;
+  width: 200px;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding-top: 20px;
+  color: #ffffff;
+  background-image: linear-gradient(0deg, #000000, #111111);
+  box-shadow: 10px 0 20px 0 rgba(0, 0, 0, 0.1), 5px 0 5px rgba(0, 0, 0, 0.2);
+}
+.Nav > div {
+  margin: 0 0 45px;
+}
+.profile-container {
+  height: 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+.profile-pic {
+  width: 70px;
+  height: 70px;
+  background-color: #ffffff;
+  background-position: 50%;
+  background-size: cover;
+  border-radius: 50%;
+  box-shadow: 0 0 20px #333333;
+}
+
+.nav-icons {
+  height: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-home {
+  background-image: url("https://raw.githubusercontent.com/DevMountain/simulation-3/master/assets/home_logo.png");
+  background-size: cover;
+  width: 40px;
+  height: 40px;
+}
+
+.nav-new-lobby {
+  background-image: url("https://raw.githubusercontent.com/DevMountain/simulation-3/master/assets/new_logo.png");
+  background-size: cover;
+  width: 40px;
+  height: 40px;
+}
+
+.nav-logout {
+  background-image: url("https://raw.githubusercontent.com/DevMountain/simulation-3/master/assets/shut_down.png");
+  background-size: cover;
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  bottom: 20px;
+  margin: 0 0 50px 50px;
+  left: 30px;
+}

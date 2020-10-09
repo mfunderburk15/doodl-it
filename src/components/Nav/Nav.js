@@ -3,6 +3,7 @@ import axios from "axios";
 import { withRouter, Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { updateUser, logout } from "../../ducks/authReducer";
+import "../../styles/Nav.css";
 
 function Nav(props) {
   useEffect(() => {
@@ -11,8 +12,8 @@ function Nav(props) {
     });
   }, []);
 
-  const handleLogOut = () => {
-    props.history.push("/home")
+  const handleLogout = () => {
+    props.history.push("/home");
     axios.post("/api/auth/logout").then((res) => {
       props.logout();
       props.history.push("/");
@@ -20,20 +21,17 @@ function Nav(props) {
   };
 
   return (
-    <div>
-      <div>
+    <div className="Nav">
+      <div className="profile-container">
         <img className="profile-pic" src={props.user_img} />
         <p>{props.username}</p>
       </div>
-      <div>
-        <Link className="nav-home" to="/home">
-          home
-        </Link>
-        <Link className="nav-new-lobby" to="/newlobby">
-          Create a new lobby
-        </Link>
+      <div className="nav-icons">
+        <Link className="nav-home" to="/home" />
+
+        <Link className="nav-new-lobby" to="/newlobby" />
       </div>
-      <button onClick={handleLogOut}>LOG OUT</button>
+      <Link className="nav-logout" to="/login" onClick={handleLogout} />
     </div>
   );
 }
