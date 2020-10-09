@@ -11,7 +11,7 @@ function NewLobby(props) {
 
   const newLobby = () => {
     axios.post("/api/lobby/create", { lobby_name, lobby_img}).then((res) => {
-      props.history.push(`/lobby/${res.data[0].lobby_id}`);
+      props.history.push(`/lobby/${res.data[0].lobby_id}?creator=true`);
 
     });
   };

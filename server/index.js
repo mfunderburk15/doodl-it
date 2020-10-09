@@ -39,32 +39,90 @@ massive({
   console.log("DB Works!");
 });
 
-let rooms = [] // Those are the rooms currently used
-let emptyRoom = {
-    lobby_id: null,
-    players: [{
-        username:"",
-        score: 0,
-        is_creator: false
-    }],
-    drawHistory: [],
-    currentRound:0,
-    words:[],
-    currentWord: "",
-    points: []
-};
+let rooms = {}// Those are the rooms currently used
 
-let room = emptyRoom
+//rooms[id][players].______
 
-let users = {}
+class Room{
+  constructor(lobby_id, initialPlayer, words){
+    this.lobby_id=lobby_id
+    this.players = [initialPlayer]
+    this.drawHistory = []
+    this.currentRound = 1
+    this.words= words
+    this.currentWord = words[0]
+    this.currentPlayer = 0
+  }
+
+  successfulGuess(name){
+    for(let i=0; i < this.players.length ; i++){
+      if(this.players[i].username === name){
+        // this.players.splice(i, 1)
+        this.currentPlayer = i
+        this.currentRound++
+        this.currentWord = this.words[this.currentRound-1]
+      }
+    }
+    return this.players
+  }
+
+  removePlayer(name){
+    
+    // console.log('68', this.players)
+    // const index = this.players.findIndex((player) => {
+    //   console.log(player.username)
+    //   console.log(name)
+    //   console.log(player)
+    //   player.username === name
+    // })
+
+    
+    // console.log(index)
+
+    // if(index !== -1){
+    //   this.players.splice(index, 1)
+    //   console.log(this.players)
+    // }
+    for(let i=0; i < this.players.length ; i++){
+      if(this.players[i].username === name){
+        this.players.splice(i, 1)
+      }
+    }
+    return this.players
+  }
+
+  addPlayer(name, socket_id){
+    const player = {
+      username: name,
+      score: 0,
+      is_creator: false,
+      socket_id: socket_id
+    }
+    this.players.push(player)
+    console.log(player)
+    console.log(this.players)
+  }
+
+}
+
+//successful guess
+//game end
+//rooms[data.lobby_id] current game state
 
 io.on('connection', (socket) => {
-  io.emit('userlist', users)
 
   socket.on('initiate lobby', (data) => {
-    room = data;
-    console.log('initiate')
-    console.log(room)
+    const player ={
+      username: data.name,
+      score: 0,
+      is_creator: true,
+      socket_id: socket.id
+    }
+    const room = new Room(data.lobby_id, player, data.words)
+    rooms[data.lobby_id] = room
+
+    socket.join(data.lobby_id)
+    io.in(data.lobby_id).emit('member join', room)
   })
 
   socket.on('finish drawing', (data) => {
@@ -72,42 +130,25 @@ io.on('connection', (socket) => {
     socket.to(data.lobby).emit('emit draw finish', data)
   })
 
-  
+  socket.on('successful guess', (data) => {
+    rooms[data.lobby_id].successfulGuess(data.name)
+    
+    io.in(data.lobby_id).emit('next round', rooms[data.lobby_id])
+  })
 
   //if someone leaves the component
   socket.on('leave', (data) => {
-    for(let i=0; i < users[data.lobby].length; i++){
-      if(users[data.lobby][i] === data.name){
-        users[data.lobby].splice(i,1)
-      }
-    }
-    socket.leave(data.lobby)
-    console.log(users)
-    io.in(data.lobby).emit('member leave', users[data.lobby])
+    console.log(data.name)
+    rooms[data.lobby_id].removePlayer(data.name)
+    
+    io.in(data.lobby_id).emit('member leave', rooms[data.lobby_id])
   })
-
-  socket.on('join userlist', (data) => {
-    socket.username = data.name;
-    socket.join(data.lobby);
-    if(users[data.lobby]){
-      users[data.lobby].push(socket.username)
-    }else{
-      users[data.lobby] = [socket.username]
-    }
-  console.log(`${socket.username} has joined. ID: ${data.lobby}`);
-    io.in(data.lobby).emit('member join', users[data.lobby])
-  })
-  
 
   //Setting up join events on the socket, I want the username to be pushed onto the users array of the socket and logging the info
-  socket.on('join', (data) => {
-    room.players.push({
-      username: data.name,
-      score: 0,
-      is_creator: false
-    })
-    console.log('emitting joined')
-    socket.broadcast.emit('joined', room)
+  socket.on('member join', (data) => {
+    rooms[data.lobby_id].addPlayer(data.name, socket.id)
+    socket.join(data.lobby_id)
+    io.in(data.lobby_id).emit('member joined', rooms[data.lobby_id])
     console.log('emitted joined')
   });
 

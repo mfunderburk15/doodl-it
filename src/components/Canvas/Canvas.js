@@ -25,25 +25,34 @@ function Canvas(props) {
     contextRef.current = context;
   }, [])
 
+  console.log(props.is_creator)
+  
   //when the mouse is clicked and held it will start drawing
   const startDrawing = ({nativeEvent}) => {
+    if(props.is_creator){
     const {offsetX, offsetY} = nativeEvent;
     contextRef.current.beginPath()
     contextRef.current.moveTo(offsetX, offsetY)
     addCanvasEvent(nativeEvent)
     setIsDrawing(true)
+    }else{
+      return
+    }
   }
 
   //when the mouse is finished clicking it will stop the drawing
   const finishDrawing = ({nativeEvent}) => {
+    if(props.is_creator){
    contextRef.current.closePath()
    setIsDrawing(false)
    props.socket.emit('finish drawing', {lobby: props.lobby, canvasEvents})
    clearCanvasEvents()
+    }
   }
 
   //when the mouse is being dragged while clicking
   const draw = ({nativeEvent}) => {
+    if(props.is_creator){
     if(!isDrawing){
       return
     }
@@ -52,10 +61,8 @@ function Canvas(props) {
     contextRef.current.stroke()
     addCanvasEvent(nativeEvent)
   }
+  }
 
-//   const clear = () => {
-//       contextRef.clearRect(0,0, canvas.width, canvas.height)
-//   }
 
 
   props.socket.on('emit draw finish', (data) => {
@@ -74,15 +81,15 @@ function Canvas(props) {
 
 
   return (
-      <div>
-    <canvas
+    <div>
+      <canvas
       className="whiteboard"
       onMouseDown={startDrawing}
       onMouseUp={finishDrawing}
       onMouseMove={draw}
       ref={canvasRef}
-    />
-    <button>Clear</button>
+      />
+      <button>Clear</button>
     </div>
   );
 }

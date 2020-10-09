@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import { updateUser } from "../../ducks/authReducer";
 import Canvas from "../Canvas/Canvas"
 import axios from "axios";
+import queryString from 'query-string'
 
 
 const totalRounds = 3
@@ -14,131 +15,169 @@ class Lobby extends Component {
     super(props);
 
     this.state = {
-      users:[],
+      room:{
+        lobby_id: null,
+        players: [],
+        drawHistory: [],
+        currentRound:1,
+        words:[],
+        currentWord: "",
+        currentPlayer:0
+        },
       user: null,
       guessedWord:"",
-      currentRound:1,
-      score:0,
-      currentWord: null,
-      words:[]
+      words:[],
+      backToHome: false
     };
     this.socket = io.connect();
-    this.socket.on('member join', (data) => {
+    this.socket.on('member joined', (data) => {
     this.setState({
-      users:data
-    })
-    // this.socket.on('draw', draw)  
+      room: data
+    })  
       console.log(data)
     })
 
     
     this.socket.on('member leave', (data) => {
+      console.log("hit")
       this.setState({
-        users:data
+        room: data
       })
       console.log(data)
     })
     
-    this.user_id=this.props.user_id
-    this.username = this.props.username
-    this.lobby_id = this.props.match.params.lobby_id
-    this.is_creator = this.props.is_creator
-    this.currentWord="missed"
-    this.currentRound=1;
-    this.words = []
-    console.log(this.props)
+    this.socket.on('next round', (data) => {
+      this.setState({
+        room: data
+      })
+      console.log(data)
+    })
+    
   }
 
   componentDidMount() {
+    const {creator} = queryString.parse(this.props.location.search)
     const { user_id, username, user_img, is_creator, lobby_id} = this.props
     this.props.updateUser({user_id, username, user_img, is_creator, lobby_id})
-    if(this.is_creator){
+    if(creator){
+      console.log("hit it")
       axios.get("/api/words/get").then((res) => {
         const shuffled = res.data.sort(() => { return 0.5 - Math.random()})
 
         let selected = shuffled.slice(0, totalRounds)
 
         const wordsMapped = selected.map((word) => {return word.word})
-        this.setState({
-          words: wordsMapped,
-          word: wordsMapped[0]
-        })
+
         this.socket.emit('initiate lobby', {
-          lobby_id: this.lobby_id,
-          players:[{
-            username: this.username,
-            score: 0,
-            is_creator: true
-          }],
-          drawHistory:[],
-          currentRound: 1,
-          words: wordsMapped,
-          currentWord: wordsMapped[0],
+          lobby_id: this.props.match.params.lobby_id,
+          name: this.props.username,
+          words: wordsMapped
         });
       })
-    } else{
-      this.socket.emit('join', {name:this.username, lobby:this.lobby_id})
-      this.socket.on('joined', (data) => {
-        console.log(data)
-        this.currentWord = data.current.currentWord
-        this.currentRound = data.currentRound
-        this.words = data.words
-        this.setState({
-          currentWord: data.currentWord,
-          currentRound: data.currentRound,
-          words: data.words
+    }else{
+      console.log("hit else")
+      this.socket.emit('member join', {
+        lobby_id:this.props.match.params.lobby_id,
+        name:this.props.username 
         })
-        console.log('joined')
-      })
     }
-    this.setState({
-      user: this.username,
-    });
-    this.socket.emit('join userlist', {name:this.username, lobby:this.lobby_id});
   }
 
   
   componentWillUnmount(){
     console.log("hit")
-    this.socket.emit('leave', {name:this.props.username, lobby:this.props.match.params.lobby_id})
+    this.socket.emit('leave', {name:this.props.username, lobby_id:this.props.match.params.lobby_id})
     this.socket.close()
   }
-  
-  successfulGuess(){
-    const score = this.state.score
-    this.setState({
-      score: score + 1
-    })
 
-    this.socket.emit('successful guess', {user_id: this.user_id})
+  handleChange = (e) => {
+    const value = e.target.value
+    const name = e.target.name
+    this.setState({
+      [name]: value
+    })
   }
 
+  handleGuess = (e) => {
+    console.log(this.state.guessedWord)
+    e.preventDefault()
+    if(this.state.room.currentWord === this.state.guessedWord){
+      console.log("correct")
+      this.socket.emit('successful guess', {name:this.props.username, lobby_id:this.props.match.params.lobby_id})
+    }else{
+      alert("guess again")
+    }
+
+    //resetting the value of input
+    this.setState({
+      guessedWord:""
+    })
+  }
+  
+  successfulGuess =() =>{
+    this.socket.emit('successful guess', {name: this.props.username, lobby_id: this.props.match.params.lobby_id,  })
+  }
+
+  // nextRound = () => {
+  //   const lastRound = this.state.currentRound
+  //   const words = this.state.words
+
+  //   if(lastRound + 1 < totalRounds){
+  //     this.setState({
+  //       currentRound: lastRound + 1,
+  //       word: words[lastRound]
+  //     })
+  //   }else{
+  //     this.endLobby()
+  //   }
+  // }
+
+  // endLobby = () => {
+  //   !this.state.backToHome
+  // }
+
+  // destroyLobby = () =>{
+    
+  //   if(this.state.users.length === []){
+  //     axios.delete(`/api/lobby/delete/${this.lobby_id}`, this.lobby_id)
+  //   }
+    
+  // }
+  // queryString.parse(this.props.location.search).creator
   render() {
-    const mappedUsers = this.state.users.map((e, i) => {
+    console.log(this.props.username)
+    console.log(this.state.room)
+    const mappedUsers = this.state.room.players.map((e, i) => {
       return(
-        <p className="users-in-lobby" key={i}>{e}</p>
+      <p className="users-in-lobby" key={i}>{e.username}</p>
       )
     })
     return (
     <div className="lobby">
-      <div className="row">
-        <Canvas
-        lobby={this.props.match.params.lobby_id}
-        socket={this.socket}/>
-        <div className="users">
+      <h3> Welcome to the game!</h3>
+      <p>Round: {this.state.room.currentRound} of {totalRounds}</p>
+      {this.state.room.players.length > 0 && this.props.username===this.state.room.players[this.state.room.currentPlayer].username && <p>Draw the word: <strong>{this.state.room.currentWord}</strong></p>}
+      <Canvas
+      lobby={this.state.room.lobby_id}
+      socket={this.socket}
+      is_creator={this.state.room.players.length > 0 && this.props.username===this.state.room.players[this.state.room.currentPlayer].username}/>
+      <div className="users">
         <ul>{mappedUsers}</ul>
-          <div className="guesses"></div>
-          
-        </div>
-        <div className="top-message">
-          <div className="draw hidden">
-            <p>The secret word is: <span className="word"></span></p>
-          </div>
-          <form>
-            Guess the word! <input name="guess" class="guess-input" type="text" />
-          </form>
-        </div>
       </div>
+      {this.state.room.players.length > 0 && this.props.username!==this.state.room.players[this.state.room.currentPlayer].username &&
+      <div>
+      <input
+      type="text"
+      placeholder="Guess the word!"
+      onChange={this.handleChange}
+      value={this.state.guessedWord}
+      name="guessedWord"
+      />
+      <button onClick={this.handleGuess}>Submit</button>
+      </div>}
+      {/* {!this.state.backToHome ? null : <div className="go-home">
+        <p>Game is finished!</p>
+        <button onClick={()=>{this.destroyLobby}}> Okay</button></div>} */}
     </div>);
   }
 }

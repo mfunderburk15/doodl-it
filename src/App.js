@@ -8,11 +8,13 @@ import Nav from "./components/Nav/Nav";
 function App(props) {
   return (
     <div className="App">
+      <div className="App-cover">
       {props.location.pathname === "/login" ||
       props.location.pathname === "/register" ? null : (
         <Nav />
       )}
       {routes}
+      </div>
     </div>
   );
 }

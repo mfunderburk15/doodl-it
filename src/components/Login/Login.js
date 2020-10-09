@@ -3,6 +3,8 @@ import axios from "axios";
 import { connect } from "react-redux";
 import { updateUser } from "../../ducks/authReducer";
 import { Link } from "react-router-dom";
+import "../../styles/Login.css"
+import logo from "../../imgs/logo.png"
 
 function Login(props) {
   const [username, setUsername] = useState("");
@@ -17,7 +19,15 @@ function Login(props) {
 
   return (
     <div className="login">
-      <div className="login-container">
+      <div className="login-intro">
+       <img className="logo" src={logo}/> 
+      </div>
+      <div className="login-info">
+      <div className="login-left">
+
+      </div>
+      <div className="login-right">
+        <div>
         <div className="login-input-box">
           <p>Username:</p>
           <input
@@ -44,6 +54,8 @@ function Login(props) {
             <button>Register</button>
           </Link>
         </div>
+      </div>
+      </div>
       </div>
     </div>
   );
