@@ -45,6 +45,7 @@ function Login(props) {
               <p>Password:</p>
               <input
                 name="password"
+                type="password"
                 onChange={(e) => {
                   setPassword(e.target.value);
                 }}
