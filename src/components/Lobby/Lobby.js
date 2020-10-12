@@ -42,6 +42,9 @@ class Lobby extends Component {
       this.setState({
         room: data,
       });
+      // if(this.state.room.players === []){
+      //   axios.delete
+      // }
       console.log(data);
     });
 
@@ -63,6 +66,7 @@ class Lobby extends Component {
       is_creator,
       lobby_id,
     });
+    console.log(this.props);
     if (creator) {
       console.log("hit it");
       axios.get("/api/words/get").then((res) => {
@@ -92,6 +96,9 @@ class Lobby extends Component {
   }
 
   componentWillUnmount() {
+    const { user_id } = this.props;
+    axios.put("/api/lobby/leavelobby", { user_id }).then((res) => {});
+
     console.log("hit");
     this.socket.emit("leave", {
       name: this.props.username,

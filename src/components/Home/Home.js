@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
+import { updateUser } from "../../ducks/authReducer";
 import axios from "axios";
 import "../../styles/Home.css";
 
@@ -7,6 +8,14 @@ function Home(props) {
   const [lobbies, setLobbies] = useState([]);
 
   useEffect(() => {
+    const { user_id, username, user_img, is_creator, lobby_id } = props;
+    props.updateUser({
+      user_id,
+      username,
+      user_img,
+      is_creator,
+      lobby_id,
+    });
     console.log(props);
     axios.get("/api/lobby/getlobbies").then((res) => {
       setLobbies(res.data);
@@ -51,4 +60,4 @@ function mapStateToProps(state) {
   return state;
 }
 
-export default connect(mapStateToProps)(Home);
+export default connect(mapStateToProps, { updateUser })(Home);
