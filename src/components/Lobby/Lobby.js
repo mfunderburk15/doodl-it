@@ -42,9 +42,15 @@ class Lobby extends Component {
       this.setState({
         room: data,
       });
-      // if(this.state.room.players === []){
-      //   axios.delete
-      // }
+      console.log(data);
+      if (this.state.room.players === []) {
+        axios
+          .delete(`/api/lobby/delete/${this.props.match.params.lobby_id}`)
+          .then((res) => {
+            console.log("hit delete");
+            this.props.history.push("/home");
+          });
+      }
       console.log(data);
     });
 
