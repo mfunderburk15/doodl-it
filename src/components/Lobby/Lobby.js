@@ -43,7 +43,7 @@ class Lobby extends Component {
         room: data,
       });
       console.log(data);
-      if (this.state.room.players === []) {
+      if (this.state.room.players.length === 0) {
         axios
           .delete(`/api/lobby/delete/${this.props.match.params.lobby_id}`)
           .then((res) => {

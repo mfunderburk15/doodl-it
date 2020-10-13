@@ -22,3 +22,9 @@ is_admin BOOLEAN,
 is_creator BOOLEAN,
 lobby_id INT REFERENCES lobbies(lobby_id)
 );
+
+CREATE TABLE stats(
+    stat_id SERIAL PRIMARY KEY,
+    user_id INT REFERENCES users(user_id),
+    games_played INTEGER
+);

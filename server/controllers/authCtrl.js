@@ -31,6 +31,8 @@ module.exports = {
       lobby_id,
     ]);
 
+    await db.create_stat_tracker([newUser.user_id]);
+
     req.session.user = newUser;
 
     res.status(200).send(req.session.user);
@@ -64,8 +66,22 @@ module.exports = {
   },
   me: async (req, res) => {
     const db = req.app.get("db");
-    const { user_id, is_admin, username, user_img, is_creator, lobby_id } = req.session;
-    const user = await db.me(user_id, username, user_img, is_admin, is_creator, lobby_id);
+    const {
+      user_id,
+      is_admin,
+      username,
+      user_img,
+      is_creator,
+      lobby_id,
+    } = req.session;
+    const user = await db.me(
+      user_id,
+      username,
+      user_img,
+      is_admin,
+      is_creator,
+      lobby_id
+    );
     res.status(200).send(req.session.user);
   },
 };
