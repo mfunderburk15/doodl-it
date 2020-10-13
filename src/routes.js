@@ -8,6 +8,7 @@ import Login from "./components/Login/Login";
 import Register from "./components/Register/Register";
 import Lobby from "./components/Lobby/Lobby";
 import Admin from "./components/Admin/Admin";
+import Profile from "./components/profile/Profile";
 
 export default (
   <Switch>
@@ -15,6 +16,7 @@ export default (
     <Route path="/lobby/:lobby_id" component={Lobby} />
     <Route path="/admin" component={Admin} />
     <Route path="/newlobby" component={NewLobby} />
+    <Route path="/profile" component={Profile} />
     <Route path="/login" component={Login} />
     <Route path="/register" component={Register} />
     <Route path="/" component={() => <Redirect to="/login" />} />
