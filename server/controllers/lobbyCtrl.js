@@ -23,6 +23,8 @@ module.exports = {
 
     await db.join_created_lobby([user_id, lobby[0].lobby_id]);
 
+    await db.increase_games_played([user_id]);
+
     const [user] = await db.me(
       user_id,
       username,
@@ -48,6 +50,8 @@ module.exports = {
     } = req.session.user;
 
     await db.join_lobby([user_id, req.params.lobby_id]);
+
+    await db.increase_games_played([user_id]);
 
     const [user] = await db.me(
       user_id,
