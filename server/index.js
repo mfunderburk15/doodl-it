@@ -7,6 +7,7 @@ const authCtrl = require("./controllers/authCtrl");
 const lobbyCtrl = require("./controllers/lobbyCtrl");
 const wordsCtrl = require("./controllers/wordsCtrl");
 const statsCtrl = require("./controllers/statsCtrl");
+const path = require("path");
 
 const app = express();
 const { CONNECTION_STRING, SERVER_PORT, SESSION_SECRET } = process.env;
@@ -169,3 +170,9 @@ app.delete("/api/words/delete/:word_id", wordsCtrl.deleteWord);
 
 //stat endpoints
 app.get("/api/stats/get", statsCtrl.getStats);
+
+app.use(express.static(__dirname + "/../build"));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../build/index.html"));
+});
